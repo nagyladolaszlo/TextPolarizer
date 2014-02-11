@@ -5,7 +5,6 @@
 package textpolarizer;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -18,15 +17,14 @@ import java.util.Vector;
  */
 public class Evaluator {
 
-    private String pathToSWN = "data" + File.separator + "SentiWordNet3.0.0.txt";
     private HashMap<String, Double> _dict;
 
     public Evaluator() {
-
         _dict = new HashMap<String, Double>();
         HashMap<String, Vector<Double>> _temp = new HashMap<String, Vector<Double>>();
         try {
-            BufferedReader csv = new BufferedReader(new FileReader(pathToSWN));
+            //BufferedReader csv = new BufferedReader(new FileReader(pathToSWN));
+            BufferedReader csv = new BufferedReader(new FileReader(Evaluator.class.getResource("/data/SentiWordNet3.0.0.txt").getPath()));
             String line = "";
             while ((line = csv.readLine()) != null) {
                 String[] data = line.split("\t");
@@ -68,22 +66,6 @@ public class Evaluator {
                     sum += (double) 1 / (double) i;
                 }
                 score /= sum;
-              /*  String sent = "";
-                if (score >= 0.75) {
-                    sent = "strong_positive";
-                } else if (score > 0.25 && score <= 0.5) {
-                    sent = "positive";
-                } else if (score > 0 && score >= 0.25) {
-                    sent = "weak_positive";
-                } else if (score < 0 && score >= -0.25) {
-                    sent = "weak_negative";
-                } else if (score < -0.25 && score >= -0.5) {
-                    sent = "negative";
-                } else if (score <= -0.75) {
-                    sent = "strong_negative";
-                }
-                * */
-                //_dict.put(word, sent);
                 _dict.put(word, score);
             }
         } catch (Exception e) {
@@ -91,7 +73,7 @@ public class Evaluator {
         }
     }
 
-    public Double extract(String word, String pos) {
+    public Double extractPointsForWord(String word, String pos) {
         return _dict.get(word + "#" + pos);
     }
 }

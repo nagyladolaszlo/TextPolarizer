@@ -5,6 +5,8 @@
 package textpolarizer;
 
 import java.io.File;
+import java.util.ArrayList;
+import parsetree.EvaluatedSentence;
 
 /**
  *
@@ -15,6 +17,7 @@ public class Model {
     private UserInterface ui;
     private POSTagger tagger;
     private Speaker speaker;
+    private ArrayList<EvaluatedSentence> evaluatedSentences;
 
     public Model(UserInterface ui) {
         this.ui = ui;
@@ -27,6 +30,8 @@ public class Model {
     
     public void doPolarize(){
         File inputFile = new File(ui.getjTextField1().getText());
-        tagger.parse(inputFile);
+        evaluatedSentences = tagger.parse(inputFile);
+        
+        System.out.println("DONE");
     }
 }

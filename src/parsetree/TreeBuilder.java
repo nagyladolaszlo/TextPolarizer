@@ -29,7 +29,7 @@ public class TreeBuilder {
         this.sentence = sentence;
         this.sentenceScore = 0.0;
     }
-    
+
     public TreeBuilder(String sentence, ArrayList<String> lemmaList) {
         this.root = new Node();
         this.sentence = sentence;
@@ -67,13 +67,13 @@ public class TreeBuilder {
         Node tNode = root;
         int lemmaIndex = 0;
 
-        for (int i = 0;i<temp.length();i++) {
+        for (int i = 0; i < temp.length(); i++) {
             int j;
             Double sentiNr;
             switch (temp.charAt(i)) {
                 case '(':
                     j = temp.indexOf(" ", i);
-                    String vLabel = temp.substring(i+1, j);
+                    String vLabel = temp.substring(i + 1, j);
                     Node nNode = new Node(vLabel);
                     nNode.setParent(tNode);
                     tNode.insertChild(nNode);
@@ -88,51 +88,52 @@ public class TreeBuilder {
                 default:
                     j = temp.indexOf(")", i);
                     String vWord = temp.substring(i, j);
-                    String vLemma = lemmaList.get(lemmaIndex); 
+                    String vLemma = lemmaList.get(lemmaIndex);
                     String vPOS = tNode.getLabel();
-                    
-                    switch (vPOS){
-                        case "JJ": 
-                            pos = "a"; 
+
+                    switch (vPOS) {
+                        case "JJ":
+                            pos = "a";
                             break;
                         default:
                             pos = vPOS.substring(0, 1).toLowerCase();
                             break;
                     }
-                    
-                    sentiNr = evaluator.extract(vLemma, pos);
-                    if (sentiNr == null)
+
+                    sentiNr = evaluator.extractPointsForWord(vLemma, pos);
+                    if (sentiNr == null) {
                         sentiNr = 0.0;
+                    }
                     sentiNr *= 100.0;
-                    
+
                     tNode.setWord(vWord);
                     tNode.setLemma(vLemma);
                     tNode.setPoint(sentiNr);
-                    
+
                     lemmaIndex++;
-                    i = j-1;
+                    i = j - 1;
                     break;
             }
         }
-        
+
         root = root.getChildByIndex(0);
         root.setParent(null);
     }
-    
+
     public Double evaluateTree() {
         Double score = this.scoreTree(root);
-        
+
         this.sentenceScore = score;
-        
+
         return sentenceScore;
     }
-    
+
     public Double scoreTree(Node tNode) {
         int childNr = tNode.getChildsNumber();
         Double point;
         Double score = 1.0;
-        
-        switch (childNr){
+
+        switch (childNr) {
             case 0:
                 point = tNode.getPoint();
                 tNode.setScore(point);
@@ -142,10 +143,11 @@ public class TreeBuilder {
                 tNode.setScore(point);
                 return point;
             default:
-                for(int i=0;i<childNr;i++) {
+                for (int i = 0; i < childNr; i++) {
                     point = scoreTree(tNode.getChildByIndex(i));
-                    if ((point.doubleValue()>-10.0) && (point.doubleValue()<10.0))
+                    if ((point.doubleValue() > -10.0) && (point.doubleValue() < 10.0)) {
                         point = 1.0;
+                    }
                     score *= point;
                 }
                 tNode.setScore(score);

@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import parsetree.EvaluatedSentence;
 import parsetree.TreeBuilder;
 
 /**
@@ -30,20 +31,24 @@ import parsetree.TreeBuilder;
  */
 public class POSTagger {
 
-    private TreeBuilder parseTree;  /// ez nem fog kelleni csak egy fa
-    private Evaluator evaluator = new Evaluator();
+    private TreeBuilder parseTree;
+    private Evaluator evaluator;
     private StanfordCoreNLP pipeline;
+    private ArrayList<EvaluatedSentence> evaluatedSentences;
 
     public POSTagger() {
         // creates a StanfordCoreNLP object, with POS tagging, lemmatization, NER, parsing, and coreference resolution 
         Properties props = new Properties();
         props.put("annotators", "tokenize, ssplit, pos, lemma, parse");
         pipeline = new StanfordCoreNLP(props);
+        evaluator = new Evaluator();
     }
 
-    public void parse(File input) {
+    public ArrayList<EvaluatedSentence> parse(File input) {
         ArrayList<String> lemmaList;
         String inputText = getTextOutOfFile(input);
+        evaluatedSentences = new ArrayList<>();
+        EvaluatedSentence evaluatedSentence;
 
         // create an empty Annotation just with the given text
         Annotation document = new Annotation(inputText);
@@ -78,7 +83,7 @@ public class POSTagger {
                 }
                 //Double evaluation = evaluator.extract(word, realPOS);
                 //System.out.println(">"+word+" ? "+pos+" ? "+evaluation);
-                Double evaluation2 = evaluator.extract(lemma, realPOS);
+                Double evaluation2 = evaluator.extractPointsForWord(lemma, realPOS);
                 //System.out.println("="+lemma+" ? "+pos+" ? "+evaluation2);
 
 
@@ -96,13 +101,15 @@ public class POSTagger {
             System.out.println("=> " + evalsent);
 
             Tree tree = sentence.get(TreeAnnotation.class);
-            System.out.println("bal");
-            tree.pennPrint();
-            System.out.println(tree.toString());
+            
             parseTree = new TreeBuilder(tree.toString(), lemmaList);
             parseTree.buildUpTree(evaluator);
-            System.out.println("Tree evaluation: ");
-            System.out.println(parseTree.evaluateTree());
+            
+            Double sentenceScore = parseTree.evaluateTree();
+            
+            BigDecimal sentencScore = new BigDecimal(sentenceScore, new MathContext(2));
+            evaluatedSentence = new EvaluatedSentence(sentencScore,sentence.toString());
+            evaluatedSentences.add(evaluatedSentence);
         }
 
         // This is the coreference link graph
@@ -111,8 +118,10 @@ public class POSTagger {
         // Both sentence and token offsets start at 1!
         Map<Integer, CorefChain> graph = document.get(CorefChainAnnotation.class);
 
-        Double eva = evaluator.extract("uncut", "a");
+        Double eva = evaluator.extractPointsForWord("uncut", "a");
         System.out.println("<>" + eva);
+        
+        return evaluatedSentences;
     }
 
     private String getTextOutOfFile(File f) {
