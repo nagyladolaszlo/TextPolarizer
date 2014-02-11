@@ -26,11 +26,19 @@ public class Controller {
     }
 
     protected void polarize(MouseEvent e) {
-        String message = "<html><font name='tahoma' size = 30>Now you can hear"
-                + " the text being read by the computer!</font></html>";
+        String message;
         
         model.doPolarize();
         
-        ui.showInfoMessage(message);
+        if (ui.getjRadioButton1().isSelected()) {
+            // AUDIO
+            message = "<html><font name='tahoma' size = 30>Now you can hear"
+                + " the text being read by the computer!</font></html>";
+            ui.showInfoMessage(message);
+        } else {
+            // TEXT
+            message = model.getTextResult();
+            ui.showPolarizedText(message);
+        }
     }
 }

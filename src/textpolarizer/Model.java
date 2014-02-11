@@ -32,44 +32,44 @@ public class Model {
         //    speaker.readTextVoice2("Your password is wrong.");
 
     }
-    
-    public void doPolarize(){
+
+    public void doPolarize() {
         File inputFile = new File(ui.getjTextField1().getText());
         evaluatedSentences = tagger.parse(inputFile);
     }
-    
-    public String getTextResult(){
+
+    public String getTextResult() {
         String line = null;
         StringBuilder stringBuilder = new StringBuilder();
-        String ls = System.getProperty("line.separator");
-        
+        //String ls = System.getProperty("line.separator");
+
         stringBuilder.append("<html>");
-        stringBuilder.append(ls); 
-        
-        
-        for(EvaluatedSentence evSe : evaluatedSentences){
+     //   stringBuilder.append(ls);
+
+        for (EvaluatedSentence evSe : evaluatedSentences) {
             BigDecimal score = evSe.getScore();
-            
-            
-            if (score.compareTo(this.NEGATIVE)<0){
-                line = "<font color=>";
-            }else{
-                if (score.compareTo(this.POSITIVE)>0){
-                    
-                }else{
-                    
+            String style;
+
+            if (score.compareTo(this.NEGATIVE) < 0) {
+                style = "<font style=\"BACKGROUND-COLOR: red\">";
+            } else {
+                if (score.compareTo(this.POSITIVE) > 0) {
+                    style = "<font style=\"BACKGROUND-COLOR: green\">";
+                } else {
+                    style = "<font>";
                 }
             }
+            line = style + evSe.getSentence() + "</font><br>";
             stringBuilder.append(line);
-            stringBuilder.append(ls);     
+          //  stringBuilder.append(ls);
         }
         
-        
-        
+        stringBuilder.append("</html>");
+      //  stringBuilder.append(ls);
+
         return stringBuilder.toString();
     }
-    
-    public void readTextResult(){
-        
+
+    public void readTextResult() {
     }
 }
