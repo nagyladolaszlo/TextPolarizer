@@ -12,7 +12,6 @@ import java.io.File;
  */
 public class TextPolarizer {
 
-    public static Wrapper wrapper;
     public static POSTagger tagger;
     public static Speaker speaker;
 
@@ -23,9 +22,7 @@ public class TextPolarizer {
         // TODO code application logic here
 
          File inputFile = new File("data" + File.separator + "input.txt");
-        //wrapper = new Wrapper(inputFile);
-        //wrapper.wrap();
-        tagger = new POSTagger(); 
+         tagger = new POSTagger(); 
     //    speaker = new Speaker();
     //    speaker.readText("Your password is wrong.");
     //    speaker.readTextVoice2("Your password is wrong.");
