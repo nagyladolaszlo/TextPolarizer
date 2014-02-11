@@ -1,0 +1,4 @@
+TextPolarizer
+=============
+
+DiplomProject
