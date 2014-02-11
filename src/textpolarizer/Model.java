@@ -4,7 +4,10 @@
  */
 package textpolarizer;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import parsetree.EvaluatedSentence;
 
@@ -18,6 +21,8 @@ public class Model {
     private POSTagger tagger;
     private Speaker speaker;
     private ArrayList<EvaluatedSentence> evaluatedSentences;
+    private final BigDecimal NEGATIVE = new BigDecimal(-0.2);
+    private final BigDecimal POSITIVE = new BigDecimal(+0.2);
 
     public Model(UserInterface ui) {
         this.ui = ui;
@@ -31,7 +36,40 @@ public class Model {
     public void doPolarize(){
         File inputFile = new File(ui.getjTextField1().getText());
         evaluatedSentences = tagger.parse(inputFile);
+    }
+    
+    public String getTextResult(){
+        String line = null;
+        StringBuilder stringBuilder = new StringBuilder();
+        String ls = System.getProperty("line.separator");
         
-        System.out.println("DONE");
+        stringBuilder.append("<html>");
+        stringBuilder.append(ls); 
+        
+        
+        for(EvaluatedSentence evSe : evaluatedSentences){
+            BigDecimal score = evSe.getScore();
+            
+            
+            if (score.compareTo(this.NEGATIVE)<0){
+                line = "<font color=>";
+            }else{
+                if (score.compareTo(this.POSITIVE)>0){
+                    
+                }else{
+                    
+                }
+            }
+            stringBuilder.append(line);
+            stringBuilder.append(ls);     
+        }
+        
+        
+        
+        return stringBuilder.toString();
+    }
+    
+    public void readTextResult(){
+        
     }
 }
