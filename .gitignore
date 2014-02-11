@@ -1,0 +1,7 @@
+*.jar
+build
+dist
+nbproject
+build.xml
+mbrola.bas
+manifest.mf
