@@ -106,8 +106,9 @@ public class POSTagger {
             parseTree.buildUpTree(evaluator);
             
             Double sentenceScore = parseTree.evaluateTree();
-            
+            System.out.println(sentenceScore);
             BigDecimal sentencScore = new BigDecimal(sentenceScore, new MathContext(2));
+            //BigDecimal sentencScore = new BigDecimal(evalsent, new MathContext(2));
             evaluatedSentence = new EvaluatedSentence(sentencScore,sentence.toString());
             evaluatedSentences.add(evaluatedSentence);
         }

@@ -21,16 +21,13 @@ public class Model {
     private POSTagger tagger;
     private Speaker speaker;
     private ArrayList<EvaluatedSentence> evaluatedSentences;
-    private final BigDecimal NEGATIVE = new BigDecimal(-0.2);
-    private final BigDecimal POSITIVE = new BigDecimal(+0.2);
+    private final BigDecimal NEGATIVE = new BigDecimal(-10.0);
+    private final BigDecimal POSITIVE = new BigDecimal(+10.0);
 
     public Model(UserInterface ui) {
         this.ui = ui;
         tagger = new POSTagger();
-        //    speaker = new Speaker();
-        //    speaker.readText("Your password is wrong.");
-        //    speaker.readTextVoice2("Your password is wrong.");
-
+        speaker = new Speaker();
     }
 
     public void doPolarize() {
@@ -41,10 +38,8 @@ public class Model {
     public String getTextResult() {
         String line = null;
         StringBuilder stringBuilder = new StringBuilder();
-        //String ls = System.getProperty("line.separator");
 
         stringBuilder.append("<html>");
-     //   stringBuilder.append(ls);
 
         for (EvaluatedSentence evSe : evaluatedSentences) {
             BigDecimal score = evSe.getScore();
@@ -56,20 +51,32 @@ public class Model {
                 if (score.compareTo(this.POSITIVE) > 0) {
                     style = "<font style=\"BACKGROUND-COLOR: green\">";
                 } else {
-                    style = "<font>";
+                    style = "<font style=\"BACKGROUND-COLOR: yellow\">";
                 }
             }
             line = style + evSe.getSentence() + "</font><br>";
             stringBuilder.append(line);
-          //  stringBuilder.append(ls);
         }
         
         stringBuilder.append("</html>");
-      //  stringBuilder.append(ls);
 
         return stringBuilder.toString();
     }
 
     public void readTextResult() {
+        BigDecimal score;
+        
+        for (EvaluatedSentence evSe : evaluatedSentences) {
+            score = evSe.getScore();
+            if (score.compareTo(this.NEGATIVE) < 0) {
+                speaker.readTextNegative(evSe.getSentence());
+            } else {
+                if (score.compareTo(this.POSITIVE) > 0) {
+                    speaker.readTextPositive(evSe.getSentence());
+                } else {
+                    speaker.readTextNeutral(evSe.getSentence());
+                }
+            }
+        }
     }
 }

@@ -35,6 +35,8 @@ public class Controller {
             message = "<html><font name='tahoma' size = 30>Now you can hear"
                 + " the text being read by the computer!</font></html>";
             ui.showInfoMessage(message);
+            
+            model.readTextResult();
         } else {
             // TEXT
             message = model.getTextResult();

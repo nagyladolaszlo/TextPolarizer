@@ -5,6 +5,7 @@
 package textpolarizer;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -17,14 +18,15 @@ import java.util.Vector;
  */
 public class Evaluator {
 
+    private String pathToSWN = "data" + File.separator + "SentiWordNet3.0.0.txt";
     private HashMap<String, Double> _dict;
 
     public Evaluator() {
         _dict = new HashMap<String, Double>();
         HashMap<String, Vector<Double>> _temp = new HashMap<String, Vector<Double>>();
         try {
-            //BufferedReader csv = new BufferedReader(new FileReader(pathToSWN));
-            BufferedReader csv = new BufferedReader(new FileReader(Evaluator.class.getResource("/data/SentiWordNet3.0.0.txt").getPath()));
+            BufferedReader csv = new BufferedReader(new FileReader(pathToSWN));
+            //BufferedReader csv = new BufferedReader(new FileReader(Evaluator.class.getResource("/data/SentiWordNet3.0.0.txt").getPath()));
             String line = "";
             while ((line = csv.readLine()) != null) {
                 String[] data = line.split("\t");
