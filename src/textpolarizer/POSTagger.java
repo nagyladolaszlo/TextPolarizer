@@ -10,11 +10,12 @@ import edu.stanford.nlp.ling.CoreAnnotations.*;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
-import edu.stanford.nlp.semgraph.SemanticGraph;
-import edu.stanford.nlp.semgraph.SemanticGraphCoreAnnotations.CollapsedCCProcessedDependenciesAnnotation;
 import edu.stanford.nlp.trees.Tree;
 import edu.stanford.nlp.trees.TreeCoreAnnotations.TreeAnnotation;
 import edu.stanford.nlp.util.CoreMap;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.ArrayList;
@@ -28,31 +29,24 @@ import parsetree.TreeBuilder;
  * @author Hecktor
  */
 public class POSTagger {
-    
+
+    private TreeBuilder parseTree;  /// ez nem fog kelleni csak egy fa
     private Evaluator evaluator = new Evaluator();
+    private StanfordCoreNLP pipeline;
 
     public POSTagger() {
         // creates a StanfordCoreNLP object, with POS tagging, lemmatization, NER, parsing, and coreference resolution 
-        TreeBuilder parseTree;
         Properties props = new Properties();
         props.put("annotators", "tokenize, ssplit, pos, lemma, parse");
-        StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
+        pipeline = new StanfordCoreNLP(props);
+    }
 
+    public void parse(File input) {
         ArrayList<String> lemmaList;
-        
-        // read some text in the text variable
-        String text = "I do not love you. I love wolfes. Sara does not hate me. This movie doesn't care about cleverness, wit or any other kind of intelligent humor. "
-                + "Emily got only a few presents for Christmas, beacause she was a bad a girl. The general availability of both cold and warm air in the troposphere makes winter storms in middle latitudes a common occurrence in several regions around the country. " +
-/*                + "Scenes like these are hilarious. And while there are somewhat long sequences without any laughs, the laugh-out-loud scenes more than make up for those lacking.\n" +
-"\n" +
-"The only thing about this film that makes me drop the rating a notch is the execution of the last half hour. Just like the first movie, they set up a ridiculous \"action\" ending, that isn't action at all. Its ending is overlong and goes way too long without any laughs.\n" +
-"\n" +
-"But that is the only thing I didn't like about the movie. De Niro and Crystal have a real chemistry, even more so here than in the first film. De Niro steals the scenes he is in, and Crystal steals the scenes he is in, and when they are both on screen, you're not sure who to look at.\n" +
-"\n" +*/
-"I will not win the match tomorrow. I will win the match tomorrow."       ; // Add your text here!
+        String inputText = getTextOutOfFile(input);
 
         // create an empty Annotation just with the given text
-        Annotation document = new Annotation(text);
+        Annotation document = new Annotation(inputText);
 
         // run all Annotators on this text
         pipeline.annotate(document);
@@ -62,7 +56,7 @@ public class POSTagger {
         List<CoreMap> sentences = document.get(SentencesAnnotation.class);
 
         for (CoreMap sentence : sentences) {
-            lemmaList = new ArrayList<> ();
+            lemmaList = new ArrayList<>();
             Double evalsent = 0.0;
             // traversing the words in the current sentence
             // a CoreLabel is a CoreMap with additional token-specific methods
@@ -73,10 +67,12 @@ public class POSTagger {
                 String pos = token.get(PartOfSpeechAnnotation.class);
                 // this is the lemma of the word
                 String lemma = token.get(LemmaAnnotation.class);
-                
+
                 String realPOS;
-                switch (pos){
-                    case "JJ": realPOS = "a"; break;
+                switch (pos) {
+                    case "JJ":
+                        realPOS = "a";
+                        break;
                     default:
                         realPOS = pos.substring(0, 1).toLowerCase();
                 }
@@ -84,19 +80,21 @@ public class POSTagger {
                 //System.out.println(">"+word+" ? "+pos+" ? "+evaluation);
                 Double evaluation2 = evaluator.extract(lemma, realPOS);
                 //System.out.println("="+lemma+" ? "+pos+" ? "+evaluation2);
-                
-                
-                if (evaluation2 == null) evaluation2 = 0.0;
+
+
+                if (evaluation2 == null) {
+                    evaluation2 = 0.0;
+                }
                 BigDecimal beva = new BigDecimal(evaluation2, new MathContext(2));
                 System.out.print(word + "(" + beva + "//" + realPOS + ")" + " ");
-                
+
                 evalsent += evaluation2;
-                
+
                 lemmaList.add(lemma);
             }
             System.out.println();
-            System.out.println("=> "+evalsent);
-            
+            System.out.println("=> " + evalsent);
+
             Tree tree = sentence.get(TreeAnnotation.class);
             System.out.println("bal");
             tree.pennPrint();
@@ -112,12 +110,25 @@ public class POSTagger {
         // along with a method for getting the most representative mention
         // Both sentence and token offsets start at 1!
         Map<Integer, CorefChain> graph = document.get(CorefChainAnnotation.class);
-        
+
         Double eva = evaluator.extract("uncut", "a");
-        System.out.println("<>"+eva);
+        System.out.println("<>" + eva);
     }
-    
-    public POSTagger(int i){
+
+    private String getTextOutOfFile(File f) {
+        String line = null;
+        StringBuilder stringBuilder = new StringBuilder();
+        String ls = System.getProperty("line.separator");
         
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(f));
+            while ((line = reader.readLine()) != null) {
+                stringBuilder.append(line);
+                stringBuilder.append(ls);
+            }
+        } catch (Exception ex) {
+        } finally {
+            return stringBuilder.toString();
+        }
     }
 }

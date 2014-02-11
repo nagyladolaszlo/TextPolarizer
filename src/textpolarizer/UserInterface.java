@@ -9,6 +9,8 @@ import java.awt.event.MouseAdapter;
 import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.JRadioButton;
+import javax.swing.JTextField;
 
 /**
  *
@@ -21,6 +23,27 @@ public class UserInterface extends javax.swing.JFrame {
      */
     public UserInterface() {
         initComponents();
+    }
+    private File inputFile;
+
+    public File getInputFile() {
+        return inputFile;
+    }
+
+    public void setInputFile(File inputFile) {
+        this.inputFile = inputFile;
+    }
+
+    public JRadioButton getjRadioButton1() {
+        return jRadioButton1;
+    }
+
+    public JRadioButton getjRadioButton2() {
+        return jRadioButton2;
+    }
+
+    public JTextField getjTextField1() {
+        return jTextField1;
     }
 
     /**
@@ -164,17 +187,21 @@ public class UserInterface extends javax.swing.JFrame {
     private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
         JFileChooser jFileChooser = new JFileChooser();
         jFileChooser.showOpenDialog(null);
-        File file = jFileChooser.getSelectedFile();
-        String filePath = file.getPath();
+        inputFile = jFileChooser.getSelectedFile();
+        String filePath = inputFile.getPath();
         this.jTextField1.setText(filePath);
     }//GEN-LAST:event_jButton1MouseClicked
 
-    public void addJRadioButton2MouseListener(MouseAdapter l){
+    public void addJRadioButton2MouseListener(MouseAdapter l) {
         this.jButton3.addMouseListener(l);
     }
+
+    public void showInfoMessage(String message) {
+        JOptionPane.showMessageDialog(null, message, "The result", WIDTH);
+    }
     
-    public void showInfoMessage(String message){
-        JOptionPane.showInputDialog(null, message, "The result", WIDTH);
+    public void showPolarizedText(String text){
+        JOptionPane.showMessageDialog(null, text, "The result", JOptionPane.PLAIN_MESSAGE);
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
