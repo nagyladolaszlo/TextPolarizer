@@ -4,6 +4,8 @@
  */
 package textpolarizer;
 
+import parsetree.TreeBuilder;
+import parsetree.EvaluatedSentence;
 import edu.stanford.nlp.dcoref.CorefChain;
 import edu.stanford.nlp.dcoref.CorefCoreAnnotations.CorefChainAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.*;
@@ -22,8 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import parsetree.EvaluatedSentence;
-import parsetree.TreeBuilder;
 
 /**
  *
