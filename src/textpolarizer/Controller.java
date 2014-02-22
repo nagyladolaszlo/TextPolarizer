@@ -19,6 +19,7 @@ public class Controller {
         this.ui = ui;
         this.model = m;
         ui.addJRadioButton2MouseListener(new java.awt.event.MouseAdapter() {
+            @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 polarize(evt);
             }

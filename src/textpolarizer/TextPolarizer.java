@@ -4,13 +4,14 @@
  */
 package textpolarizer;
 
-import java.io.File;
-
 /**
  *
  * @author Hecktor
  */
 public class TextPolarizer {
+    private static UserInterface ui;
+    private static Model m;
+    private static Controller c;
 
     /**
      * @param args the command line arguments
@@ -19,9 +20,9 @@ public class TextPolarizer {
         // TODO code application logic here
 
         lookAndFeel();
-        final UserInterface ui = new UserInterface();
-        Model m = new Model(ui);
-        Controller c = new Controller(m, ui);
+        ui = new UserInterface();
+        m = new Model(ui);
+        c = new Controller(m, ui);
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {

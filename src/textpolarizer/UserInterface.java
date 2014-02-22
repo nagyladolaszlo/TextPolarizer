@@ -4,7 +4,6 @@
  */
 package textpolarizer;
 
-import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.io.File;
 import javax.swing.JFileChooser;

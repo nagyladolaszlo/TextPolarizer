@@ -5,9 +5,7 @@
 package textpolarizer;
 
 import parsetree.EvaluatedSentence;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
@@ -46,12 +44,12 @@ public class Model {
             String style;
 
             if (score.compareTo(this.NEGATIVE) < 0) {
-                style = "<font style=\"BACKGROUND-COLOR: red\">";
+                style = "<font size = 5 style=\"BACKGROUND-COLOR:#FF9090\">";
             } else {
                 if (score.compareTo(this.POSITIVE) > 0) {
-                    style = "<font style=\"BACKGROUND-COLOR: green\">";
+                    style = "<font size = 5 style=\"BACKGROUND-COLOR:#90FF90\">";
                 } else {
-                    style = "<font style=\"BACKGROUND-COLOR: yellow\">";
+                    style = "<font size = 5 style=\"BACKGROUND-COLOR:#FFFF90\">";
                 }
             }
             line = style + evSe.getSentence() + "</font><br>";

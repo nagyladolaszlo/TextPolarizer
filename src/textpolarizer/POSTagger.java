@@ -34,11 +34,12 @@ public class POSTagger {
     private TreeBuilder parseTree;
     private Evaluator evaluator;
     private StanfordCoreNLP pipeline;
+    private Properties props;
     private ArrayList<EvaluatedSentence> evaluatedSentences;
 
     public POSTagger() {
         // creates a StanfordCoreNLP object, with POS tagging, lemmatization, NER, parsing, and coreference resolution 
-        Properties props = new Properties();
+        props = new Properties();
         props.put("annotators", "tokenize, ssplit, pos, lemma, parse");
         pipeline = new StanfordCoreNLP(props);
         evaluator = new Evaluator();
